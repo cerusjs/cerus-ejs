@@ -9,7 +9,8 @@
     "rules": {
         "indent": [
             "error",
-            "tab"
+            "tab",
+            {"SwitchCase": 1, "MemberExpression": 0}
         ],
         "linebreak-style": [
             "error",
@@ -26,8 +27,8 @@
         "padding-line-between-statements": [
             "error",
             {"blankLine": "always", "prev": "*", "next": "return"},
-            { "blankLine": "always", "prev": ["const", "let", "var"], "next": "*"}, 
-            { "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"]}
+            {"blankLine": "always", "prev": ["const", "let", "var"], "next": "*"}, 
+            {"blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"]}
         ],
         "no-console": [
             "off"
@@ -72,7 +73,9 @@
                 "overrides": {
                     "if": {"after": false},
                     "for": {"after": false},
-                    "while": {"after": false}
+                    "while": {"after": false},
+                    "catch": {"after": false},
+                    "switch": {"after": false}
                 }
             }
         ],
