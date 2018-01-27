@@ -1,6 +1,6 @@
 {
 	"name": "cerus-ejs",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "The ejs plugin for CerusJS",
 	"main": "index.js",
 	"repository": {
