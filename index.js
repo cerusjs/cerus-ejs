@@ -12,7 +12,7 @@ module.exports = function() {
 	var ejs;
 
 	self.init_ = function() {
-		ejs = require("./lib/ejs")();
+		ejs = new (require("./lib/ejs"))();
 	}
 
 	self.ejs = function() {
