@@ -1,23 +1,19 @@
 module.exports = function() {
-	var self = {};
-
-	var package = require("./package.json");
-	
-	self.name = package["name"];
-	self.version = package["version"];
-	self.dependencies = [
-		"cerus-fs"
-	];
-
+	var plugin = {};
 	var ejs;
+	var package = require("./package.json");
 
-	self.init_ = function() {
+	plugin.name = package["name"];
+	plugin.version = package["version"];
+	plugin.dependencies = [];
+
+	plugin._init = function() {
 		ejs = new (require("./lib/ejs"))();
 	}
 
-	self.ejs = function() {
+	plugin.ejs = function() {
 		return ejs;
 	}
 
-	return self;
+	return plugin;
 }
