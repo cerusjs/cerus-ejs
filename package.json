@@ -1,0 +1,27 @@
+{
+	"name": "cerus-ejs",
+	"version": "0.1.4",
+	"description": "The ejs plugin for CerusJS",
+	"main": "index.js",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/cerusjs/cerus-ejs.git"
+	},
+	"author": "cerusjs",
+	"bugs": {
+		"url": "https://github.com/cerusjs/cerus-ejs/issues"
+	},
+	"scripts": {
+		"test": "./node_modules/.bin/mocha tests --reporter spec",
+		"lint": "eslint lib/"
+	},
+	"homepage": "https://github.com/cerusjs/cerus-ejs",
+	"dependencies": {
+		"ejs": "^2.5.7"
+	},
+	"devDependencies": {
+		"cerus": "0.0.14",
+		"chai": "^4.1.2",
+		"mocha": "^4.0.1"
+	}
+}
