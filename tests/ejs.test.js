@@ -1,300 +1,137 @@
-var expect = require("chai").expect;
-var cerus = require("cerus")();
-var ejs = function() {
+const expect = require("chai").expect;
+const cerus = require("cerus")();
+const ejs = () => {
 	return new (require("../lib/ejs"))();
-}
-var file = function(path) {
+};
+const file = path => {
 	return cerus.file(path);
-}
+};
 
-describe("ejs", function() {
-	describe("constructor", function() {
-		context("without any parameters", function() {
-			it("should throw no errors", function() {
-				var func = function() {
-					ejs();
-				}
-
-				expect(func).to.not.throw();
-			});
-		});
-	});
-
-	describe("#render", function() {
-		context("with no parameters", function() {
-			it("should throw a TypeError", function() {
-				var func = function() {
-					ejs().render();
-				}
-
-				expect(func).to.throw();
-			});
-		});
-
-		context("with a non-string as parameters", function() {
-			it("should throw a TypeError", function() {
-				var func = function() {
-					ejs().render(1234);
-				}
-
-				expect(func).to.throw();
-			});
-		});
-
-		context("with 'test' and no data as parameters", function() {
-			it("should return 'test'", function() {
+describe("ejs", () => {
+	describe("#render", () => {
+		context("with 'test' and no data as parameters", () => {
+			it("should return 'test'", () => {
 				expect(ejs().render("test")).to.equal("test");
 			});
 		});
 
-		context("with 'test' and empty data as parameters", function() {
-			it("should return 'test'", function() {
+		context("with 'test' and empty data as parameters", () => {
+			it("should return 'test'", () => {
 				expect(ejs().render("test", {})).to.equal("test");
 			});
 		});
 
-		context("with '<%- test1 %>' and {test1:'test2'} as parameters", function() {
-			it("should return 'test2'", function() {
+		context("with '<%- test1 %>' and {test1:'test2'} as parameters", () => {
+			it("should return 'test2'", () => {
 				expect(ejs().render("<%- test1 %>", {test1:'test2'})).to.equal("test2");
 			});
 		});
 
-		context("with '<% if(user) { %><%- user.name %><% } %>' and {user: {name: 'test2'}} as parameters" , function() {
-			it("should return 'test2'", function() {
-				var ejs_ = ejs().render("<% if(user) { %><%- user.name %><% } %>", {user: {name: 'test2'}});
-				expect(ejs_).to.equal("test2");
+		context("with '<% if(user) { %><%- user.name %><% } %>' and {user: {name: 'test2'}} as parameters" , () => {
+			it("should return 'test2'", () => {
+				const _ejs = ejs().render("<% if(user) { %><%- user.name %><% } %>", {user: {name: 'test2'}});
+
+				expect(_ejs).to.equal("test2");
 			});
 		});
 
-		context("with a file and {user: {name: 'test'}}", function() {
-			it("should return 'test'", function(done) {
+		context("with a file and {user: {name: 'test'}}", () => {
+			it("should return 'test'", done => {
 				file(__dirname + "/views/view1.ejs").read()
-				.then(function(file) {
-					expect(ejs().render(file, {user: {name: 'test'}})).to.equal("test");
+				.then(file => {
+					expect(ejs().render(file.data(), {user: {name: 'test'}})).to.equal("test");
 					done();
 				});
 			});
 		});
 	});
 
-	describe("#template", function() {
-		context("with no parameters", function() {
-			it("should throw a TypeError", function() {
-				var func = function() {
-					ejs().template();
-				}
+	describe("#template", () => {
+		context("create a template and call it without data", () => {
+			it("should work perfectly", () => {
+				const template = ejs().template("test1");
 
-				expect(func).to.throw();
+				expect(template.render()).to.equal("test1");
 			});
 		});
 
-		context("with incorrect parameters", function() {
-			it("should throw a TypeError", function() {
-				var func = function() {
-					ejs().template(1234);
-				}
+		context("create a template and call it with data", () => {
+			it("should work perfectly", () => {
+				const template = ejs().template("<%- test %>");
 
-				expect(func).to.throw();
-			});
-		});
-
-		context("create a template and call it without data", function() {
-			it("should work perfectly", function() {
-				var ejs_ = ejs();
-				var class_ = ejs_.template("test1");
-				expect(class_.render()).to.equal("test1");
-			});
-		});
-
-		context("create a template and call it with data", function() {
-			it("should work perfectly", function() {
-				var ejs_ = ejs();
-				var class_ = ejs_.template("<%- test %>");
-				expect(class_.render({test:"test1"})).to.equal("test1");
+				expect(template.render({test: "test1"})).to.equal("test1");
 			});
 		});
 	});
 
-	describe("#includes", function() {
-		context("try using a non-existant include", function() {
-			it("should throw a TypeError", function() {
-				var func = function() {
-					var ejs_ = ejs();
-					ejs_.render("<%- include('/test') %>");
-				}
+	describe("#includes", () => {
+		context("try using a non-existant include", () => {
+			it("should throw a TypeError", () => {
+				const func = () => {
+					ejs().render("<%- include('/test') %>");
+				};
 
 				expect(func).to.throw();
 			});
 		});
 
-		describe("#add", function() {
-			context("with no parameters", function() {
-				it("should throw a TypeError", function() {
-					var func = function() {
-						ejs().includes().add();
-					}
+		describe("#add", () => {
+			context("with a pre-created include with no data", () => {
+				it("should return 'test1'", () => {
+					const _ejs = ejs();
 
-					expect(func).to.throw;
+					_ejs.includes().add("test", "test1");
+					expect(_ejs.render("<%- include('/test') %>")).to.equal("test1");
 				});
 			});
 
-			context("with incorrect parameters", function() {
-				it("should throw a TypeError", function() {
-					var func = function() {
-						ejs().includes().add(123, 123);
-					}
+			context("with a pre-created include with data", () => {
+				it("should return 'test2'", () => {
+					const _ejs = ejs();
 
-					expect(func).to.throw;
-				});
-			});
-			
-			context("with a pre-created include with no data", function() {
-				it("should return 'test1'", function() {
-					var ejs_ = ejs();
-					ejs_.includes().add("test", "test1");
-					expect(ejs_.render("<%- include('/test') %>")).to.equal("test1");
-				});
-			});
-
-			context("with a pre-created include with data", function() {
-				it("should return 'test2'", function() {
-					var ejs_ = ejs();
-					ejs_.includes().add("test", "<%- test1 %>");
-					expect(ejs_.render("<%- include('/test', {test1: 'test2'}) %>")).to.equal("test2");
+					_ejs.includes().add("test", "<%- test1 %>");
+					expect(_ejs.render("<%- include('/test', {test1: 'test2'}) %>")).to.equal("test2");
 				});
 			});
 		});
 
-		describe("#has", function() {
-			context("with no parameters", function() {
-				it("should throw a TypeError", function() {
-					var func = function() {
-						ejs().includes().has();
-					}
+		describe("#has", () => {
+			context("with no pre-created include", () => {
+				it("should return false", () => {
+					const _ejs = ejs();
 
-					expect(func).to.throw;
+					expect(_ejs.includes().has("test")).to.deep.equal(false);
 				});
 			});
 
-			context("with incorrect parameters", function() {
-				it("should throw a TypeError", function() {
-					var func = function() {
-						ejs().includes().has(123);
-					}
+			context("with a pre-created include", () => {
+				it("should return true", () => {
+					const _ejs = ejs();
 
-					expect(func).to.throw;
-				});
-			});
-			
-			context("with no pre-created include", function() {
-				it("should return false", function() {
-					var ejs_ = ejs();
-					expect(ejs_.includes().has("test")).to.deep.equal(false);
-				});
-			});
-
-			context("with a pre-created include", function() {
-				it("should return true", function() {
-					var ejs_ = ejs();
-					ejs_.includes().add("test", "<%- test1 %>");
-					expect(ejs_.includes().has("test")).to.deep.equal(true);
+					_ejs.includes().add("test", "<%- test1 %>");
+					expect(_ejs.includes().has("test")).to.deep.equal(true);
 				});
 			});
 		});
 
-		describe("#remove", function() {
-			context("with no parameters", function() {
-				it("should throw a TypeError", function() {
-					var func = function() {
-						ejs().includes().has();
-					}
-
-					expect(func).to.throw;
-				});
-			});
-
-			context("with incorrect parameters", function() {
-				it("should throw a TypeError", function() {
-					var func = function() {
-						ejs().includes().has(123);
-					}
-
-					expect(func).to.throw;
-				});
-			});
-
-			context("with an include that doesn't exist", function() {
-				it("should throw an error", function() {
-					var func = function() {
-						var ejs_ = ejs();
-						ejs_.includes().remove("test");
-					}
+		describe("#remove", () => {
+			context("with an include that doesn't exist", () => {
+				it("should throw an error", () => {
+					const func = () => {
+						ejs().includes().remove("test");
+					};
 
 					expect(func).to.throw();
 				});
 			});
 
-			context("with an existant include", function() {
-				it("should have 0 includes left", function() {
-					var ejs_ = ejs();
-					ejs_.includes().add("test", "test1");
-					ejs_.includes().remove("test");
-					expect(ejs_.includes().list().length).to.equal(0);
-				});
-			});
-		});
+			context("with an existant include", () => {
+				it("should have 0 includes left", () => {
+					const _ejs = ejs();
 
-		describe("#clear", function() {
-			context("with no pre-created includes", function() {
-				it("should have no includes left", function() {
-					var ejs_ = ejs();
-					ejs_.includes().clear();
-					expect(ejs_.includes().list().length).to.equal(0);
-				});
-			});
-
-			context("with one pre-created include", function() {
-				it("should have no includes left", function() {
-					var ejs_ = ejs();
-					ejs_.includes().add("test1", "test");
-					ejs_.includes().clear();
-					expect(ejs_.includes().list().length).to.equal(0);
-				});
-			});
-
-			context("with multiple pre-created includes", function() {
-				it("should have no includes left", function() {
-					var ejs_ = ejs();
-					ejs_.includes().add("test1", "test");
-					ejs_.includes().add("test2", "test");
-					ejs_.includes().clear();
-					expect(ejs_.includes().list().length).to.equal(0);
-				});
-			});
-		});
-
-		describe("#list", function() {
-			context("with no pre-created includes", function() {
-				it("should return an empty array", function() {
-					var ejs_ = ejs();
-					expect(ejs_.includes().list()).to.deep.equal([]);
-				});
-			});
-
-			context("with one pre-created include", function() {
-				it("should return ['test1']", function() {
-					var ejs_ = ejs();
-					ejs_.includes().add("test1", "test");
-					expect(ejs_.includes().list()).to.deep.equal(["test1"]);
-				});
-			});
-
-			context("with multiple pre-created includes", function() {
-				it("should return ['test1', 'test2']", function() {
-					var ejs_ = ejs();
-					ejs_.includes().add("test1", "test");
-					ejs_.includes().add("test2", "test");
-					expect(ejs_.includes().list()).to.deep.equal(["test1", "test2"]);
+					_ejs.includes().add("test", "test1");
+					_ejs.includes().remove("test");
+					expect(_ejs.includes().list().length).to.equal(0);
 				});
 			});
 		});
